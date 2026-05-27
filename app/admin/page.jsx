@@ -1,8 +1,53 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import Sidebar from "../../components/admin/Sidebar";
 
+import { supabase } from "../../lib/supabase";
+
 export default function AdminPage() {
+
+  const [projects, setProjects] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
+
+  useEffect(() => {
+
+    fetchData();
+
+  }, []);
+
+  async function fetchData() {
+
+    // PROJECTS
+
+    const { data: projectsData } =
+      await supabase
+        .from("projects")
+        .select("*");
+
+    setProjects(projectsData || []);
+
+    // BLOGS
+
+    const { data: blogsData } =
+      await supabase
+        .from("Blog")
+        .select("*");
+
+    setBlogs(blogsData || []);
+
+    // TESTIMONIALS
+
+    const { data: testimonialsData } =
+      await supabase
+        .from("testimonials")
+        .select("*");
+
+    setTestimonials(testimonialsData || []);
+
+  }
 
   return (
 
@@ -12,27 +57,27 @@ export default function AdminPage() {
 
       <Sidebar />
 
-      {/* MAIN CONTENT */}
+      {/* MAIN */}
 
-      <div className="flex-1">
+      <div className="flex-1 p-10">
 
-        {/* TOPBAR */}
+        {/* TOP */}
 
-        <div className="border-b border-white/5 px-8 py-6 flex items-center justify-between">
+        <div className="flex items-center justify-between mb-10">
 
           <div>
 
-            <h1 className="text-[34px] font-black mb-1">
+            <h1 className="text-4xl font-black mb-2">
               Dashboard
             </h1>
 
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-500">
               SHAVZTECH Solutions LLP
             </p>
 
           </div>
 
-          <button className="bg-white/5 border border-white/10 px-6 py-3 rounded-2xl hover:bg-white/10 transition-all">
+          <button className="border border-white/10 px-6 py-3 rounded-2xl">
 
             View site
 
@@ -40,301 +85,198 @@ export default function AdminPage() {
 
         </div>
 
-        {/* CONTENT */}
+        {/* STATS */}
 
-        <div className="p-8 space-y-8">
+        <div className="grid grid-cols-3 gap-6 mb-8">
 
-          {/* STATS */}
+          {/* BLOGS */}
 
-          <div className="grid grid-cols-4 gap-5">
+          <div className="bg-[#101726] border border-cyan-500 rounded-3xl p-8">
 
-            {/* CARD */}
+            <p className="text-gray-500 uppercase text-sm mb-4">
+              Blog Posts
+            </p>
 
-            <div className="bg-[#0B1020] border border-purple-500/30 rounded-[24px] p-6">
+            <h2 className="text-5xl font-black">
+              {blogs.length}
+            </h2>
 
-              <p className="text-gray-500 text-sm uppercase tracking-[2px] mb-4">
-                New Enquiries
-              </p>
+            <p className="text-gray-500 mt-2">
+              Total blogs
+            </p>
 
-              <h2 className="text-5xl font-black mb-2">
-                4
+          </div>
+
+          {/* PROJECTS */}
+
+          <div className="bg-[#101726] border border-yellow-500 rounded-3xl p-8">
+
+            <p className="text-gray-500 uppercase text-sm mb-4">
+              Projects
+            </p>
+
+            <h2 className="text-5xl font-black">
+              {projects.length}
+            </h2>
+
+            <p className="text-gray-500 mt-2">
+              Portfolio projects
+            </p>
+
+          </div>
+
+          {/* TESTIMONIALS */}
+
+          <div className="bg-[#101726] border border-pink-500 rounded-3xl p-8">
+
+            <p className="text-gray-500 uppercase text-sm mb-4">
+              Testimonials
+            </p>
+
+            <h2 className="text-5xl font-black">
+              {testimonials.length}
+            </h2>
+
+            <p className="text-gray-500 mt-2">
+              Client reviews
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* MAIN GRID */}
+
+        <div className="grid grid-cols-2 gap-8">
+
+          {/* RECENT BLOGS */}
+
+          <div className="bg-[#101726] border border-white/10 rounded-3xl p-8">
+
+            <div className="flex items-center justify-between mb-8">
+
+              <h2 className="text-2xl font-bold">
+                Recent blogs
               </h2>
-
-              <p className="text-gray-500 text-sm">
-                unread
-              </p>
 
             </div>
 
-            {/* CARD */}
+            <div className="space-y-6">
 
-            <div className="bg-[#0B1020] border border-cyan-400/30 rounded-[24px] p-6">
+              {
+                blogs.slice(0, 4).map((item) => (
 
-              <p className="text-gray-500 text-sm uppercase tracking-[2px] mb-4">
-                Blog Posts
-              </p>
+                  <div
+                    key={item.id}
+                    className="border-b border-white/5 pb-5"
+                  >
 
-              <h2 className="text-5xl font-black mb-2">
-                4
-              </h2>
+                    <h3 className="font-semibold text-lg mb-2">
 
-              <p className="text-gray-500 text-sm">
-                2 published · 2 draft
-              </p>
+                      {item.title}
 
-            </div>
+                    </h3>
 
-            {/* CARD */}
+                    <p className="text-gray-500">
 
-            <div className="bg-[#0B1020] border border-yellow-400/30 rounded-[24px] p-6">
+                      {item.category}
 
-              <p className="text-gray-500 text-sm uppercase tracking-[2px] mb-4">
-                Projects
-              </p>
+                    </p>
 
-              <h2 className="text-5xl font-black mb-2">
-                5
-              </h2>
+                  </div>
 
-              <p className="text-gray-500 text-sm">
-                in portfolio
-              </p>
-
-            </div>
-
-            {/* CARD */}
-
-            <div className="bg-[#0B1020] border border-pink-500/30 rounded-[24px] p-6">
-
-              <p className="text-gray-500 text-sm uppercase tracking-[2px] mb-4">
-                Open Roles
-              </p>
-
-              <h2 className="text-5xl font-black mb-2">
-                3
-              </h2>
-
-              <p className="text-gray-500 text-sm">
-                hiring now
-              </p>
+                ))
+              }
 
             </div>
 
           </div>
 
-          {/* LOWER GRID */}
+          {/* RECENT PROJECTS */}
 
-          <div className="grid grid-cols-[1.2fr_0.8fr] gap-5">
+          <div className="bg-[#101726] border border-white/10 rounded-3xl p-8">
 
-            {/* RECENT ENQUIRIES */}
+            <h2 className="text-2xl font-bold mb-8">
+              Recent projects
+            </h2>
 
-            <div className="bg-[#0B1020] border border-white/5 rounded-[28px] p-6">
+            <div className="space-y-6">
 
-              <div className="flex items-center justify-between mb-8">
+              {
+                projects.slice(0, 4).map((item) => (
 
-                <h2 className="text-2xl font-bold">
-                  Recent enquiries
-                </h2>
+                  <div
+                    key={item.id}
+                    className="border-b border-white/5 pb-5"
+                  >
 
-                <button className="bg-white/5 border border-white/10 px-5 py-2 rounded-xl text-sm">
+                    <h3 className="font-semibold text-lg mb-2">
 
-                  See all
+                      {item.project}
 
-                </button>
+                    </h3>
 
-              </div>
+                    <p className="text-gray-500">
 
-              <div className="space-y-6">
+                      {item.client}
 
-                <div className="border-b border-white/5 pb-5">
-
-                  <div className="flex items-center gap-3 mb-2">
-
-                    <div className="w-3 h-3 rounded-full bg-purple-400"></div>
-
-                    <p className="text-lg text-gray-300">
-                      Rahul Menon — Web Development
                     </p>
 
                   </div>
 
-                  <p className="text-gray-500 ml-6 text-sm">
-                    2 min ago · Client
-                  </p>
-
-                </div>
-
-                <div className="border-b border-white/5 pb-5">
-
-                  <div className="flex items-center gap-3 mb-2">
-
-                    <div className="w-3 h-3 rounded-full bg-cyan-400"></div>
-
-                    <p className="text-lg text-gray-300">
-                      Aisha K. — Full Stack Course
-                    </p>
-
-                  </div>
-
-                  <p className="text-gray-500 ml-6 text-sm">
-                    20 min ago · Student
-                  </p>
-
-                </div>
-
-                <div className="border-b border-white/5 pb-5">
-
-                  <div className="flex items-center gap-3 mb-2">
-
-                    <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-
-                    <p className="text-lg text-gray-300">
-                      Vishnu Das — React Developer role
-                    </p>
-
-                  </div>
-
-                  <p className="text-gray-500 ml-6 text-sm">
-                    1 hr ago · Candidate
-                  </p>
-
-                </div>
-
-                <div>
-
-                  <div className="flex items-center gap-3 mb-2">
-
-                    <div className="w-3 h-3 rounded-full bg-purple-300"></div>
-
-                    <p className="text-lg text-gray-300">
-                      TechBridge Co. — Digital Marketing
-                    </p>
-
-                  </div>
-
-                  <p className="text-gray-500 ml-6 text-sm">
-                    3 hrs ago · Client
-                  </p>
-
-                </div>
-
-              </div>
+                ))
+              }
 
             </div>
 
-            {/* RIGHT PANEL */}
+          </div>
 
-            <div className="bg-[#0B1020] border border-white/5 rounded-[28px] p-6">
+        </div>
 
-              <h2 className="text-2xl font-bold mb-8">
-                Enquiry breakdown
-              </h2>
+        {/* TESTIMONIAL SECTION */}
 
-              {/* BAR */}
+        <div className="bg-[#101726] border border-white/10 rounded-3xl p-8 mt-8">
 
-              <div className="space-y-6">
+          <h2 className="text-2xl font-bold mb-8">
+            Latest testimonials
+          </h2>
 
-                <div>
+          <div className="space-y-6">
 
-                  <div className="flex items-center justify-between mb-3">
+            {
+              testimonials.slice(0, 3).map((item) => (
 
-                    <p className="text-gray-400">
-                      Clients
-                    </p>
-
-                    <p className="text-gray-500">
-                      55%
-                    </p>
-
-                  </div>
-
-                  <div className="w-full bg-white/5 h-3 rounded-full overflow-hidden">
-
-                    <div className="w-[55%] h-full bg-purple-500 rounded-full"></div>
-
-                  </div>
-
-                </div>
-
-                <div>
+                <div
+                  key={item.id}
+                  className="border-b border-white/5 pb-6"
+                >
 
                   <div className="flex items-center justify-between mb-3">
 
-                    <p className="text-gray-400">
-                      Students
-                    </p>
+                    <h3 className="font-semibold text-lg">
 
-                    <p className="text-gray-500">
-                      30%
+                      {item.name}
+
+                    </h3>
+
+                    <p className="text-yellow-400">
+
+                      {item.stars}
+
                     </p>
 
                   </div>
 
-                  <div className="w-full bg-white/5 h-3 rounded-full overflow-hidden">
+                  <p className="text-gray-400">
 
-                    <div className="w-[30%] h-full bg-cyan-400 rounded-full"></div>
+                    {item.quote}
 
-                  </div>
+                  </p>
 
                 </div>
 
-                <div>
-
-                  <div className="flex items-center justify-between mb-3">
-
-                    <p className="text-gray-400">
-                      Candidates
-                    </p>
-
-                    <p className="text-gray-500">
-                      15%
-                    </p>
-
-                  </div>
-
-                  <div className="w-full bg-white/5 h-3 rounded-full overflow-hidden">
-
-                    <div className="w-[15%] h-full bg-yellow-400 rounded-full"></div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-              {/* QUICK ACTIONS */}
-
-              <div className="mt-10 border-t border-white/5 pt-8">
-
-                <h2 className="text-2xl font-bold mb-6">
-                  Quick actions
-                </h2>
-
-                <div className="flex flex-wrap gap-4">
-
-                  <button className="bg-white/5 border border-white/10 px-5 py-3 rounded-xl hover:bg-white/10 transition-all">
-
-                    New post
-
-                  </button>
-
-                  <button className="bg-white/5 border border-white/10 px-5 py-3 rounded-xl hover:bg-white/10 transition-all">
-
-                    Add project
-
-                  </button>
-
-                  <button className="bg-white/5 border border-white/10 px-5 py-3 rounded-xl hover:bg-white/10 transition-all">
-
-                    Post job
-
-                  </button>
-
-                </div>
-
-              </div>
-
-            </div>
+              ))
+            }
 
           </div>
 
